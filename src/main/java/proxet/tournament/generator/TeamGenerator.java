@@ -20,9 +20,7 @@ public class TeamGenerator {
             String[] playerData;
             Map<Player, Integer> map = new HashMap<Player, Integer>();
 
-
-            //change for the whole file
-//            for (int i = 0; i < 18; i++) {
+            //read file
             while ((line = br.readLine()) != null) {
 
                 //split line to get 3 parameters separately
@@ -37,9 +35,9 @@ public class TeamGenerator {
                 map.put(new Player(nickname, vehicle), t);
 
             }
+            //create map sorted by players waiting time in descending order
             Map<Player, Integer> sortedMap = sortByComparator(map, false);
-            //players with the biggest waiting time
-            List<Player> lobbyPlayers = new ArrayList<>();
+
 
             //additional list to contain vehicle types in our lobby
             List<Integer> tmp = new ArrayList<>();
@@ -51,34 +49,16 @@ public class TeamGenerator {
 
 
                 //occurrences of some vehicle type in our lobby
-                int occurrences = 0;
-                if (lobbyPlayers.size() != 18) {
+                int occurrences;
+                if (lobbyMap.size() != 18) {
 
-                    // check occurrences of every vehicle, it should be 6 for each type
-                    if (entry.getKey().getVehicleType() == 1) {
-                        occurrences = Collections.frequency(tmp, entry.getKey().getVehicleType());
+                    // check occurrences of every vehicle, it should be 6 in lobby
+                    occurrences = Collections.frequency(tmp, entry.getKey().getVehicleType());
 
-                        if (occurrences < 6) {
-                            lobbyPlayers.add(entry.getKey());
-                            tmp.add(entry.getKey().getVehicleType());
-                            lobbyMap.put(entry.getKey(), entry.getKey().getVehicleType());
-                        }
-                    } else if (entry.getKey().getVehicleType() == 2) {
-                        occurrences = Collections.frequency(tmp, entry.getKey().getVehicleType());
-
-                        if (occurrences < 6) {
-                            lobbyPlayers.add(entry.getKey());
-                            tmp.add(entry.getKey().getVehicleType());
-                            lobbyMap.put(entry.getKey(), entry.getKey().getVehicleType());
-                        }
-                    } else if (entry.getKey().getVehicleType() == 3) {
-                        occurrences = Collections.frequency(tmp, entry.getKey().getVehicleType());
-
-                        if (occurrences < 6) {
-                            lobbyPlayers.add(entry.getKey());
-                            tmp.add(entry.getKey().getVehicleType());
-                            lobbyMap.put(entry.getKey(), entry.getKey().getVehicleType());
-                        }
+                    //if vehicle type occurred less or equal than 6 times we can add player with this vehicle
+                    if (occurrences < 6) {
+                        tmp.add(entry.getKey().getVehicleType());
+                        lobbyMap.put(entry.getKey(), entry.getKey().getVehicleType());
                     }
 
                 } else {
@@ -86,8 +66,10 @@ public class TeamGenerator {
                 }
 
             }
+            //sorted map with 18 players
             sortedMap = sortByComparator(lobbyMap, true);
 
+            //distribute players in two teams
             int counter = 0;
             for (Map.Entry<Player, Integer> entry : sortedMap.entrySet())
             {
@@ -99,29 +81,6 @@ public class TeamGenerator {
                 counter++;
             }
 
-            System.out.println("Teams 1 : ");
-            for (Player pl: team1) {
-                System.out.println(pl.getNickname() + " " + pl.getVehicleType());
-            }
-            System.out.println("Teams 2 : ");
-            for (Player pl: team2) {
-                System.out.println(pl.getNickname() + " " + pl.getVehicleType());
-            }
-
-//            for (Map.Entry<Player,Integer> entry : sortedMap.entrySet()) {
-//                System.out.println("Key : " + entry.getKey() + " Value : "+ entry.getValue());
-//
-//                if (counter1!=3) {
-//                    team1.add(entry.getKey());
-//                    counter1++;
-//                    counter2 = 0;
-//                }
-//                if(counter2!=3){
-//                    team2.add(entry.getKey());
-//
-//                }
-//            }
-
 
         } catch (FileNotFoundException ex) {
             System.out.println("File not found!");
@@ -131,7 +90,7 @@ public class TeamGenerator {
         return new TeamGeneratorResult(team1, team2);
     }
 
-
+    //additional method to sort map by value
     private static Map<Player, Integer> sortByComparator(Map<Player, Integer> unsortMap, final boolean order) {
 
         List<Entry<Player, Integer>> list = new LinkedList<Entry<Player, Integer>>(unsortMap.entrySet());

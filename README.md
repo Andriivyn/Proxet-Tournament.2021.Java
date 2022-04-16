@@ -30,4 +30,4 @@ Also, there is a pipeline that runs this test in a docker; Make sure you don't b
 ## Notes
 1. We'll run the pipelines to calculate the execution time, so please ensure that your code is fast.
 1. We'll read the code, so please keep it clean and readable. Please add comments to your code where necessary.
-1. Good luck!
+1. Good luck
